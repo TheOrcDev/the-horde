@@ -1,9 +1,12 @@
 "use client";
 
 import { z } from "zod";
+import { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
+import { Loader2 } from "lucide-react";
 
 import { addEmail } from "@/server/waitingList";
 
@@ -23,6 +26,7 @@ const formSchema = z.object({
 });
 
 export default function TheHordeForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,6 +35,7 @@ export default function TheHordeForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
     const { success, message } = await addEmail(values.email);
 
     if (success) {
@@ -39,6 +44,7 @@ export default function TheHordeForm() {
     } else {
       toast.error(message);
     }
+    setIsLoading(false);
   }
 
   return (
@@ -59,8 +65,13 @@ export default function TheHordeForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" variant={"outline"}>
-          Submit
+        <Button
+          type="submit"
+          variant={"outline"}
+          disabled={isLoading}
+          className="flex-1"
+        >
+          {isLoading ? <Loader2 className="animate-spin size-4" /> : "Submit"}
         </Button>
       </form>
     </Form>
