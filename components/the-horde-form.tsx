@@ -35,9 +35,10 @@ export default function TheHordeForm() {
 
     if (success) {
       form.reset();
+      toast.success(message);
+    } else {
+      toast.error(message);
     }
-
-    toast(message);
   }
 
   return (
