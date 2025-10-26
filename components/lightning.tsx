@@ -1,14 +1,18 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 
-interface LightningProps {
+const TIME_SCALE = 1000;
+const VERTEX_COUNT = 6;
+
+type LightningProps = {
   hue?: number;
   xOffset?: number;
   speed?: number;
   intensity?: number;
   size?: number;
-}
+};
 
 const Lightning: React.FC<LightningProps> = ({
   hue = 230,
@@ -21,7 +25,9 @@ const Lightning: React.FC<LightningProps> = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      return;
+    }
 
     const resizeCanvas = () => {
       canvas.width = canvas.clientWidth;
@@ -32,7 +38,6 @@ const Lightning: React.FC<LightningProps> = ({
 
     const gl = canvas.getContext("webgl");
     if (!gl) {
-      console.error("WebGL not supported");
       return;
     }
 
@@ -134,11 +139,12 @@ const Lightning: React.FC<LightningProps> = ({
       type: number
     ): WebGLShader | null => {
       const shader = gl.createShader(type);
-      if (!shader) return null;
+      if (!shader) {
+        return null;
+      }
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error("Shader compile error:", gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
       }
@@ -150,17 +156,21 @@ const Lightning: React.FC<LightningProps> = ({
       fragmentShaderSource,
       gl.FRAGMENT_SHADER
     );
-    if (!vertexShader || !fragmentShader) return;
+    if (!(vertexShader && fragmentShader)) {
+      return;
+    }
 
     const program = gl.createProgram();
-    if (!program) return;
+    if (!program) {
+      return;
+    }
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error("Program linking error:", gl.getProgramInfoLog(program));
       return;
     }
+    // biome-ignore lint/correctness/useHookAtTopLevel: External library
     gl.useProgram(program);
 
     const vertices = new Float32Array([
@@ -188,13 +198,13 @@ const Lightning: React.FC<LightningProps> = ({
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.uniform2f(iResolutionLocation, canvas.width, canvas.height);
       const currentTime = performance.now();
-      gl.uniform1f(iTimeLocation, (currentTime - startTime) / 1000.0);
+      gl.uniform1f(iTimeLocation, (currentTime - startTime) / TIME_SCALE);
       gl.uniform1f(uHueLocation, hue);
       gl.uniform1f(uXOffsetLocation, xOffset);
       gl.uniform1f(uSpeedLocation, speed);
       gl.uniform1f(uIntensityLocation, intensity);
       gl.uniform1f(uSizeLocation, size);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      gl.drawArrays(gl.TRIANGLES, 0, VERTEX_COUNT);
       requestAnimationFrame(render);
     };
     requestAnimationFrame(render);
@@ -204,7 +214,7 @@ const Lightning: React.FC<LightningProps> = ({
     };
   }, [hue, xOffset, speed, intensity, size]);
 
-  return <canvas ref={canvasRef} className="w-full h-full relative" />;
+  return <canvas className="relative h-full w-full" ref={canvasRef} />;
 };
 
 export default Lightning;

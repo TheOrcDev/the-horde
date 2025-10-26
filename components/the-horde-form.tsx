@@ -1,14 +1,11 @@
 "use client";
 
-import { z } from "zod";
-import { useState } from "react";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
 import { Loader2 } from "lucide-react";
-
-import { addEmail } from "@/server/waitingList";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,10 +16,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { addEmail } from "@/server/waiting-list";
 
 const formSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export default function TheHordeForm() {
@@ -50,8 +47,8 @@ export default function TheHordeForm() {
   return (
     <Form {...form}>
       <form
+        className="flex w-full justify-between gap-2"
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex gap-2 justify-between w-full"
       >
         <FormField
           control={form.control}
@@ -66,12 +63,12 @@ export default function TheHordeForm() {
           )}
         />
         <Button
+          className="flex-1"
+          disabled={isLoading}
           type="submit"
           variant={"outline"}
-          disabled={isLoading}
-          className="flex-1"
         >
-          {isLoading ? <Loader2 className="animate-spin size-4" /> : "Submit"}
+          {isLoading ? <Loader2 className="size-4 animate-spin" /> : "Submit"}
         </Button>
       </form>
     </Form>
