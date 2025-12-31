@@ -6,13 +6,13 @@ import { useEffect, useRef } from "react";
 const TIME_SCALE = 1000;
 const VERTEX_COUNT = 6;
 
-type LightningProps = {
+interface LightningProps {
   hue?: number;
   xOffset?: number;
   speed?: number;
   intensity?: number;
   size?: number;
-};
+}
 
 const Lightning: React.FC<LightningProps> = ({
   hue = 230,
