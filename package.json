@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "biome check",
+    "lint": "oxlint",
     "format": "biome format --write"
   },
   "dependencies": {
@@ -32,15 +32,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
-    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4.2.1",
     "@types/node": "^25.3.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "drizzle-kit": "^0.31.9",
-    "eslint": "^10.0.2",
-    "eslint-config-next": "16.1.6",
     "husky": "^9.1.7",
+    "oxlint": "^1.83.0",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
     "ultracite": "^7.2.5"
