@@ -3,9 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "sonner";
-import SiteHeader from "@/components/site-header";
-import SponsorRails from "@/components/sponsor-rails";
-import { isAuthConfigured } from "@/lib/auth-config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,8 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Horde",
-  description: "Wanted posters for people who ship.",
+  title: "The Horde - Waiting list",
+  description:
+    "This project is going to be a collection of resources for developers.",
 };
 
 export default function RootLayout({
@@ -32,10 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
       >
-        <SponsorRails>
-          <SiteHeader configured={isAuthConfigured()} />
-          {children}
-        </SponsorRails>
+        {children}
         <Toaster />
         <Analytics />
       </body>
