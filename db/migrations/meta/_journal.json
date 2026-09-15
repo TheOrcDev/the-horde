@@ -15,6 +15,13 @@
       "when": 1744799662723,
       "tag": "0001_wonderful_night_nurse",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789485227071,
+      "tag": "0002_tiny_nighthawk",
+      "breakpoints": true
     }
   ]
 }
