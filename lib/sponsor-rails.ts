@@ -1,10 +1,8 @@
 export const RAIL_SEAT_CAP = 20;
 export const RAIL_ROTATION_MS = 8000;
-export const DESKTOP_RAIL_VISIBLE = 2;
+export const DESKTOP_RAIL_VISIBLE = 5;
 export const MOBILE_RAIL_VISIBLE = 2;
 export const HOUSE_TILE_HREF = "/sponsor";
-export const HOUSE_TILE_MAILTO =
-  "mailto:theorcdev@gmail.com?subject=Horde%20rail%20seat";
 
 const DESKTOP_WINDOW = DESKTOP_RAIL_VISIBLE + DESKTOP_RAIL_VISIBLE;
 

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   desktopRailWindows,
   HOUSE_TILE_HREF,
-  HOUSE_TILE_MAILTO,
   isHttpUrl,
   isSafeLogoSrc,
   MOBILE_RAIL_VISIBLE,
@@ -17,9 +16,9 @@ import {
 } from "@/lib/sponsor-rails";
 import { cn } from "@/lib/utils";
 
-const LEFT_STACK_TILTS_DEG = [-1.4, 1.1] as const;
-const RIGHT_STACK_TILTS_DEG = [1.3, -1.2] as const;
-const LOGO_SIZE_CLASS = "size-10";
+const LEFT_STACK_TILTS_DEG = [-1.2, 0.9, -0.7, 1.1, -1] as const;
+const RIGHT_STACK_TILTS_DEG = [1.1, -0.8, 1, -1.2, 0.7] as const;
+const LOGO_SIZE_CLASS = "size-8";
 
 interface SponsorRailsTrackProps {
   children: ReactNode;
@@ -27,23 +26,12 @@ interface SponsorRailsTrackProps {
 }
 
 const HouseTile = ({ seatsLeft }: { seatsLeft: number }) => (
-  <div className="flex min-h-24 flex-col justify-center gap-1 rounded-lg border border-border/70 border-dashed bg-card/70 px-3 py-2.5 backdrop-blur-sm">
-    <a
-      className="flex flex-col gap-1 rounded-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-      href={HOUSE_TILE_HREF}
-    >
-      <span className="font-medium text-sm">Your banner here</span>
-      <span className="text-muted-foreground text-xs">
-        Advertise — {seatsLeft}/{RAIL_SEAT_CAP} left
-      </span>
-    </a>
-    <a
-      className="text-muted-foreground text-xs underline-offset-2 hover:text-foreground hover:underline"
-      href={HOUSE_TILE_MAILTO}
-    >
-      Email to reserve a seat
-    </a>
-  </div>
+  <a
+    className="flex min-h-14 flex-col justify-center rounded-lg border border-border/70 border-dashed bg-card/70 px-3 py-2 text-xs backdrop-blur-sm hover:border-primary/50"
+    href={HOUSE_TILE_HREF}
+  >
+    Advertise · {seatsLeft}/{RAIL_SEAT_CAP} left
+  </a>
 );
 
 const PaidTile = ({ tile }: { tile: Extract<RailTile, { kind: "paid" }> }) => {
@@ -53,12 +41,12 @@ const PaidTile = ({ tile }: { tile: Extract<RailTile, { kind: "paid" }> }) => {
 
   return (
     <a
-      className="flex min-h-24 flex-col justify-center gap-1.5 rounded-lg border border-border/60 bg-card/80 px-3 py-2.5 backdrop-blur-sm transition-colors hover:border-primary/40 hover:bg-card"
+      className="flex min-h-14 flex-col justify-center gap-1 rounded-lg border border-border/60 bg-card/80 px-3 py-2 backdrop-blur-sm hover:border-primary/40"
       href={href}
       rel={isExternal ? "noopener" : undefined}
       target={isExternal ? "_blank" : undefined}
     >
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-2">
         {showLogo ? (
           <div
             aria-label={`${tile.name} mark`}
@@ -73,13 +61,13 @@ const PaidTile = ({ tile }: { tile: Extract<RailTile, { kind: "paid" }> }) => {
           <div
             className={cn(
               LOGO_SIZE_CLASS,
-              "flex shrink-0 items-center justify-center rounded-md bg-muted font-semibold text-sm"
+              "flex shrink-0 items-center justify-center rounded-md bg-muted font-semibold text-xs"
             )}
           >
             {tile.name.at(0) ?? "?"}
           </div>
         )}
-        <p className="font-medium text-sm leading-tight">{tile.name}</p>
+        <p className="font-medium text-xs leading-tight">{tile.name}</p>
       </div>
       <p className="line-clamp-2 text-muted-foreground text-xs">
         {tile.tagline}
@@ -110,12 +98,9 @@ const StackedRail = ({
   return (
     <aside
       aria-label={label}
-      className={cn(
-        "pointer-events-none fixed top-0 z-30 hidden h-svh w-52 flex-col justify-center lg:flex",
-        side === "left" ? "left-0" : "right-0"
-      )}
+      className="sticky top-0 z-30 hidden h-svh w-44 shrink-0 flex-col justify-center lg:flex"
     >
-      <div className="pointer-events-auto flex flex-col gap-4 p-3">
+      <div className="flex flex-col gap-2 p-2">
         {tiles.map((tile, index) => {
           const tilt = tilts.at(index) ?? 0;
           const key =
@@ -167,22 +152,24 @@ export const SponsorRailsTrack = ({
   }, [seats.length]);
 
   return (
-    <div className="relative min-h-svh">
-      <div className="sticky top-0 z-40 border-border/50 border-b bg-background/75 px-2 py-2 backdrop-blur-sm lg:hidden">
-        <div className="grid grid-cols-2 gap-2">
-          {mobileTiles.map((tile, index) => {
-            const key =
-              tile.kind === "paid"
-                ? `mobile-${tile.id}-${index}`
-                : `mobile-house-${index}`;
-
-            return <RailCard key={key} tile={tile} />;
-          })}
-        </div>
-      </div>
+    <div className="flex min-h-svh">
       <StackedRail label="Left sponsor rail" side="left" tiles={left} />
+      <div className="relative min-w-0 flex-1">
+        <div className="sticky top-0 z-40 border-border/50 border-b bg-background/75 px-2 py-2 backdrop-blur-sm lg:hidden">
+          <div className="grid grid-cols-2 gap-2">
+            {mobileTiles.map((tile, index) => {
+              const key =
+                tile.kind === "paid"
+                  ? `mobile-${tile.id}-${index}`
+                  : `mobile-house-${index}`;
+
+              return <RailCard key={key} tile={tile} />;
+            })}
+          </div>
+        </div>
+        {children}
+      </div>
       <StackedRail label="Right sponsor rail" side="right" tiles={right} />
-      {children}
     </div>
   );
 };
